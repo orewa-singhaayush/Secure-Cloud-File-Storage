@@ -1,0 +1,27 @@
+
+# Secrets and credentials
+encryption_key.bin
+.env
+.aws/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Uploaded and reconstructed files
+uploads/
+downloads/
+cloud_downloads/
+
+# Encrypted project data
+encrypted_blocks/
+
+# Local backups
+phase2_backup.py
+app_backup.py
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

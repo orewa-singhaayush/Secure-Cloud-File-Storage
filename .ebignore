@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+.git/
+.aws/
+encryption_key.bin
+uploads/
+downloads/
+cloud_downloads/
+encrypted_blocks/

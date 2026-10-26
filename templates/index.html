@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Secure Cloud Storage</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #151515;
+            color: #f5f5f5;
+        }
+
+        header {
+            padding: 25px 20px;
+            text-align: center;
+            background: #301B3f;
+            border-bottom: 1px solid #59476b;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 0;
+            color: #d4cbdc;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: #242126;
+            border: 1px solid #493b50;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #e3c6f2;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #66586d;
+            background: #151515;
+            color: white;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #8b65a8;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #a17cbd;
+        }
+
+        .message {
+            padding: 14px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .success {
+            background: #263b30;
+            border: 1px solid #4f8062;
+        }
+
+        .error {
+            background: #452626;
+            border: 1px solid #985252;
+        }
+
+        .identifier {
+            padding: 12px;
+            margin-top: 12px;
+            background: #151515;
+            border-radius: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .note {
+            color: #c2b8c8;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #b4a5a5;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Secure Cloud File Storage</h1>
+    <p>File Segmentation • AES-256 Encryption • AWS S3</p>
+</header>
+
+<main class="container">
+
+    {% if success %}
+        <div class="message success">
+            <strong>Success</strong><br>
+            {{ success }}
+
+            {% if folder_name %}
+                <div class="identifier">
+                    <strong>Encrypted Folder Identifier:</strong><br>
+                    {{ folder_name }}
+                    <p class="note">
+                        Save this identifier. You will need it to restore
+                        the file from AWS S3.
+                    </p>
+                </div>
+            {% endif %}
+
+            {% if restored_folder %}
+                <div class="identifier">
+                    <strong>Output location:</strong><br>
+                    {{ restored_folder }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <div class="message error">
+            <strong>Error</strong><br>
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <section class="card">
+        <h2>1. Encrypt and Upload</h2>
+
+        <p class="note">
+            Select a file. The application will split it into blocks,
+            encrypt the blocks, and upload the encrypted data to AWS S3.
+        </p>
+
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+
+            <label for="file">Choose a file</label>
+            <input type="file" id="file" name="file" required>
+
+            <label for="block_size">Block Size</label>
+            <select id="block_size" name="block_size">
+                <option value="1">1 MB</option>
+                <option value="2">2 MB</option>
+                <option value="5">5 MB</option>
+                <option value="10">10 MB</option>
+            </select>
+
+            <button type="submit">Encrypt & Upload to Cloud</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>2. Download and Decrypt</h2>
+
+        <p class="note">
+            Enter the encrypted folder identifier displayed after uploading.
+            The application will download the encrypted blocks, reconstruct
+            the file, and verify its integrity.
+        </p>
+
+        <form action="/restore" method="POST">
+
+            <label for="folder_name">Encrypted Folder Identifier</label>
+            <input
+                type="text"
+                id="folder_name"
+                name="folder_name"
+                placeholder="Enter the identifier from the upload result"
+                required
+            >
+
+            <button type="submit">Download & Restore File</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>How It Works</h2>
+
+        <p class="note">
+            1. The selected file is divided into smaller blocks.<br>
+            2. Each block is encrypted using AES-256-GCM.<br>
+            3. Encrypted blocks and the manifest are uploaded to AWS S3.<br>
+            4. The blocks can later be downloaded and decrypted.<br>
+            5. SHA-256 hashes are compared to verify file integrity.
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    Secure Cloud File Storage — Academic Project
+</footer>
+
+</body>
+</html>
